@@ -9,7 +9,7 @@ import Network.Simple.TCP
 
 handleConnection :: Socket -> IO ()
 handleConnection conn = forever $ do
-  r <- recv conn 100
+  r <- recv conn 100 -- reads the first 100 bytes
   case r of 
     Nothing -> pure ()
     Just msgBytes -> do 
