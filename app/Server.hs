@@ -37,6 +37,7 @@ handleConnection conn ref = forever $ do
     Nothing -> pure ()
     Just msgBytes -> do
       let cmd = decodeCommand msgBytes
+      TIO.putStrLn $ "Received command: " <> T.pack (show cmd)
       response <- atomically (processCommand cmd ref)
       send conn (encodeResponse response)
 
