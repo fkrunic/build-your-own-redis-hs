@@ -3,9 +3,10 @@
 module Main where
 
 import Control.Monad (forever)
-import qualified Data.Text.Encoding as T
+import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Network.Simple.TCP
+import Protocol
 
 handleConnection :: Socket -> IO ()
 handleConnection conn = forever $ do
@@ -13,9 +14,9 @@ handleConnection conn = forever $ do
   case r of 
     Nothing -> pure ()
     Just msgBytes -> do 
-      let msg = T.decodeUtf8 msgBytes
-      TIO.putStrLn $ "Client says: " <> msg
-      send conn $ T.encodeUtf8 "world!"
+      let msg = decodeMessage msgBytes
+      TIO.putStrLn $ "Client says: " <> T.pack (show msg)
+      send conn (encodeResponse Ok)
 
 main :: IO ()
 main = do 

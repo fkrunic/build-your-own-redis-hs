@@ -18,6 +18,7 @@ library
     build-depends:
         base ^>=4.16.4.0,
         binary,
+        bytestring,
         text
     default-language: GHC2021        
 
@@ -26,6 +27,8 @@ executable redis-server
     main-is:          Server.hs
     build-depends:    
         base ^>=4.16.4.0,
+        binary,
+        build-your-own-redis-hs,
         text,
         network-simple
     hs-source-dirs:   app
@@ -36,6 +39,8 @@ executable redis-client
     main-is:          Client.hs
     build-depends:    
         base ^>=4.16.4.0,
+        binary,
+        build-your-own-redis-hs,
         text,
         network-simple
     hs-source-dirs:   app
