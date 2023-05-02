@@ -7,9 +7,9 @@ import Data.Text.IO qualified as TIO
 import Network.Simple.TCP
 import Protocol
 
-sendMessage :: Socket -> Message -> IO ()
-sendMessage conn msg = do
-  send conn (encodeMessage msg)
+sendMessage :: Socket -> Command -> IO ()
+sendMessage conn cmd = do
+  send conn (encodeCommand cmd)
   r <- recv conn 100 -- reads the first 100 bytes
   case r of
     Nothing -> TIO.putStrLn "Server sent no reply."

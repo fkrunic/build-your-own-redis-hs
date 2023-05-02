@@ -13,7 +13,7 @@ import Prelude hiding (lookup)
 
 type DataStore = Map T.Text T.Text
 
-processCommand :: Message -> TVar DataStore -> STM Response
+processCommand :: Command -> TVar DataStore -> STM Response
 processCommand (Set{key, value}) ref = do
   ds <- readTVar ref
   let updated = insertWith const key value ds
@@ -36,8 +36,8 @@ handleConnection conn ref = forever $ do
   case r of
     Nothing -> pure ()
     Just msgBytes -> do
-      let msg = decodeMessage msgBytes
-      response <- atomically (processCommand msg ref)
+      let cmd = decodeCommand msgBytes
+      response <- atomically (processCommand cmd ref)
       send conn (encodeResponse response)
 
 main :: IO ()

@@ -6,7 +6,7 @@ import Data.ByteString.Lazy qualified as BSL
 import Data.Text
 import GHC.Generics
 
-data Message
+data Command
   = Set {key :: Text, value :: Text}
   | Get {key :: Text}
   | Delete {key :: Text}
@@ -18,14 +18,14 @@ data Response
   | KeyDoesNotExist {badKey :: Text}
   deriving (Generic, Eq, Show)
 
-instance Binary Message
+instance Binary Command
 instance Binary Response
 
-decodeMessage :: BS.ByteString -> Message
-decodeMessage = decode . BSL.fromStrict
+decodeCommand :: BS.ByteString -> Command
+decodeCommand = decode . BSL.fromStrict
 
-encodeMessage :: Message -> BS.ByteString
-encodeMessage = BS.concat . BSL.toChunks . encode
+encodeCommand :: Command -> BS.ByteString
+encodeCommand = BS.concat . BSL.toChunks . encode
 
 decodeResponse :: BS.ByteString -> Response
 decodeResponse = decode . BSL.fromStrict
