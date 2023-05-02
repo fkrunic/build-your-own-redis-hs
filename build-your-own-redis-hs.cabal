@@ -29,6 +29,8 @@ executable redis-server
         base ^>=4.16.4.0,
         binary,
         build-your-own-redis-hs,
+        containers,
+        stm,
         text,
         network-simple
     hs-source-dirs:   app

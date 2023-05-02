@@ -2,24 +2,47 @@
 
 module Main where
 
+import Control.Concurrent.STM
 import Control.Monad (forever)
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
+import Data.Map.Strict
+import Data.Text qualified as T
+import Data.Text.IO qualified as TIO
 import Network.Simple.TCP
 import Protocol
+import Prelude hiding (lookup)
 
-handleConnection :: Socket -> IO ()
-handleConnection conn = forever $ do
+type DataStore = Map T.Text T.Text
+
+processCommand :: Message -> TVar DataStore -> STM Response
+processCommand (Set{key, value}) ref = do
+  ds <- readTVar ref
+  let updated = insertWith const key value ds
+  writeTVar ref updated
+  pure Ok
+processCommand (Get{key}) ref = do
+  ds <- readTVar ref
+  case lookup key ds of
+    Nothing -> pure (KeyDoesNotExist{badKey = key})
+    Just payload -> pure (Return{payload})
+processCommand (Delete{key}) ref = do
+  ds <- readTVar ref
+  let updated = delete key ds
+  writeTVar ref updated
+  pure Ok
+
+handleConnection :: Socket -> TVar DataStore -> IO ()
+handleConnection conn ref = forever $ do
   r <- recv conn 100 -- reads the first 100 bytes
-  case r of 
+  case r of
     Nothing -> pure ()
-    Just msgBytes -> do 
+    Just msgBytes -> do
       let msg = decodeMessage msgBytes
-      TIO.putStrLn $ "Client says: " <> T.pack (show msg)
-      send conn (encodeResponse Ok)
+      response <- atomically (processCommand msg ref)
+      send conn (encodeResponse response)
 
 main :: IO ()
-main = do 
+main = do
   TIO.putStrLn "Server started."
-  serve (Host "0.0.0.0") "1234" $ \(socket, _) -> 
-    handleConnection socket
+  store <- newTVarIO empty
+  serve (Host "0.0.0.0") "1234" $ \(socket, _) ->
+    handleConnection socket store

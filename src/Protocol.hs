@@ -1,21 +1,21 @@
 module Protocol where
 
-import qualified Data.ByteString.Lazy as BSL
-import qualified Data.ByteString as BS
 import Data.Binary
+import Data.ByteString qualified as BS
+import Data.ByteString.Lazy qualified as BSL
 import Data.Text
 import GHC.Generics
 
-data Message 
-  = Set { key :: Text, value :: Text }
-  | Get { key :: Text }
-  | Delete { key :: Text }
+data Message
+  = Set {key :: Text, value :: Text}
+  | Get {key :: Text}
+  | Delete {key :: Text}
   deriving (Generic, Eq, Show)
 
 data Response
   = Ok
-  | Error
-  | KeyDoesNotExist { badKey :: Text }
+  | Return {payload :: Text}
+  | KeyDoesNotExist {badKey :: Text}
   deriving (Generic, Eq, Show)
 
 instance Binary Message
