@@ -8,7 +8,7 @@ import Data.Map.Strict
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Network.Simple.TCP
-import Protocol
+import Storage.Strings
 import Prelude hiding (lookup)
 
 type DataStore = Map T.Text T.Text

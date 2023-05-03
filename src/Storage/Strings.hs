@@ -1,4 +1,4 @@
-module Protocol where
+module Storage.Strings where
 
 import Data.Aeson
 import Data.ByteString qualified as BS

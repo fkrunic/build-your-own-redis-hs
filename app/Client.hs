@@ -5,7 +5,7 @@ module Main where
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Network.Simple.TCP
-import Protocol
+import Storage.Strings
 
 sendMessage :: Socket -> Command -> IO ()
 sendMessage conn cmd = do
