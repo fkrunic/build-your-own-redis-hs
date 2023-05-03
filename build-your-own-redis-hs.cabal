@@ -16,6 +16,7 @@ library
     exposed-modules: Protocol
     hs-source-dirs:  src
     build-depends:
+        aeson,
         base ^>=4.16.4.0,
         binary,
         bytestring,
@@ -27,7 +28,6 @@ executable redis-server
     main-is:          Server.hs
     build-depends:    
         base ^>=4.16.4.0,
-        binary,
         build-your-own-redis-hs,
         containers,
         stm,
@@ -41,7 +41,6 @@ executable redis-client
     main-is:          Client.hs
     build-depends:    
         base ^>=4.16.4.0,
-        binary,
         build-your-own-redis-hs,
         text,
         network-simple
