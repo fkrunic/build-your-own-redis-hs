@@ -26,6 +26,8 @@ library
         base ^>=4.16.4.0,
         binary,
         bytestring,
+        containers,
+        stm,
         text
     default-language: GHC2021        
 

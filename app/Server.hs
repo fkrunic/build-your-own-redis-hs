@@ -16,30 +16,11 @@ newtype Database = Database
   { stringStore :: TVar StringStore
   }
 
-type StringStore = Map T.Text T.Text
-
 initialize :: IO Database
 initialize = do
   stringStore <- newTVarIO empty
   let db = Database{stringStore}
   pure db
-
-processCommand :: Command -> TVar StringStore -> STM Response
-processCommand (Set{key, value}) ref = do
-  ds <- readTVar ref
-  let updated = insertWith const key value ds
-  writeTVar ref updated
-  pure Ok
-processCommand (Get{key}) ref = do
-  ds <- readTVar ref
-  case lookup key ds of
-    Nothing -> pure (KeyDoesNotExist{badKey = key})
-    Just payload -> pure (Return{payload})
-processCommand (Delete{key}) ref = do
-  ds <- readTVar ref
-  let updated = delete key ds
-  writeTVar ref updated
-  pure Ok
 
 handleConnection :: Socket -> TVar StringStore -> IO ()
 handleConnection conn ref = forever $ do
