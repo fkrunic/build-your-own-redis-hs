@@ -13,7 +13,13 @@ common warnings
     ghc-options: -Wall 
 
 library
-    exposed-modules: Storage.Strings
+    exposed-modules: 
+        Protocol
+        Storage.Strings
+        
+    other-modules:
+        Common
+
     hs-source-dirs:  src
     build-depends:
         aeson,

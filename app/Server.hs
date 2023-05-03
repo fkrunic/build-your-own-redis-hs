@@ -9,6 +9,7 @@ import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Network.Simple.TCP
 import Storage.Strings
+import Protocol
 import Prelude hiding (lookup)
 
 newtype Database = Database
