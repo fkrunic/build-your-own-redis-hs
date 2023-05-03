@@ -11,9 +11,19 @@ import Network.Simple.TCP
 import Storage.Strings
 import Prelude hiding (lookup)
 
-type DataStore = Map T.Text T.Text
+newtype Database = Database
+  { stringStore :: TVar StringStore
+  }
 
-processCommand :: Command -> TVar DataStore -> STM Response
+type StringStore = Map T.Text T.Text
+
+initialize :: IO Database
+initialize = do
+  stringStore <- newTVarIO empty
+  let db = Database{stringStore}
+  pure db
+
+processCommand :: Command -> TVar StringStore -> STM Response
 processCommand (Set{key, value}) ref = do
   ds <- readTVar ref
   let updated = insertWith const key value ds
@@ -30,7 +40,7 @@ processCommand (Delete{key}) ref = do
   writeTVar ref updated
   pure Ok
 
-handleConnection :: Socket -> TVar DataStore -> IO ()
+handleConnection :: Socket -> TVar StringStore -> IO ()
 handleConnection conn ref = forever $ do
   r <- recv conn 100 -- reads the first 100 bytes
   case r of
@@ -46,6 +56,6 @@ handleConnection conn ref = forever $ do
 main :: IO ()
 main = do
   TIO.putStrLn "Server started."
-  store <- newTVarIO empty
+  db <- initialize
   serve (Host "0.0.0.0") "1234" $ \(socket, _) ->
-    handleConnection socket store
+    handleConnection socket (stringStore db)
