@@ -14,7 +14,7 @@ sendMessage conn cmd = do
   case r of
     Nothing -> TIO.putStrLn "Server sent no reply."
     Just msgBytes -> do
-      case decodeResponse msgBytes of 
+      case decodeResponse msgBytes of
         Left err -> TIO.putStrLn $ "Response parsing failure: " <> T.pack err
         Right response -> TIO.putStrLn $ T.pack (show response)
 

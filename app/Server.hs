@@ -36,7 +36,7 @@ handleConnection conn ref = forever $ do
   case r of
     Nothing -> pure ()
     Just msgBytes -> do
-      case decodeCommand msgBytes of 
+      case decodeCommand msgBytes of
         Left err -> TIO.putStrLn $ "Command parsing failure: " <> T.pack err
         Right cmd -> do
           TIO.putStrLn $ "Received command: " <> T.pack (show cmd)
